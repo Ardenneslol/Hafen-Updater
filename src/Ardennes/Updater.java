@@ -20,44 +20,35 @@ import Ardennes.UpdaterConfig.Item;
 public class Updater {
     public UpdaterConfig cfg;
     private IUpdaterListener listener;
-
-
-    public Updater(IUpdaterListener listener) {
+    public Updater(IUpdaterListener listener){
         this.listener = listener;
-        this.cfg = new UpdaterConfig();
+        cfg = new UpdaterConfig();
     }
 
     public void update() {
         Thread t = new Thread(new Runnable() {
+
+            @Override
             public void run() {
-                List<Item> update = new ArrayList();
-                Iterator var3 = Updater.this.cfg.items.iterator();
-
-                Item item;
-                while(var3.hasNext()) {
-                    item = (Item)var3.next();
-                    if (Updater.this.correct_platform(item)) {
-                        Updater.this.set_date(item);
-                        if (Updater.this.has_update(item)) {
-                            Updater.this.listener.log(String.format("Updates found for '%s'", item.file.getName()));
-                            update.add(item);
-                        } else {
-                            Updater.this.listener.log(String.format("No updates for '%s'", item.file.getName()));
-                        }
+                List<Item> update = new ArrayList<UpdaterConfig.Item>();
+                for(Item item : cfg.items){
+                    if(!correct_platform(item)){continue;}
+                    set_date(item);
+                    if(has_update(item)){
+                        listener.log(String.format("Updates found for '%s'", item.file.getName()));
+                        update.add(item);
+                    } else {
+                        listener.log(String.format("No updates for '%s'", item.file.getName()));
+                    }
+                }
+                for (Item item: update){
+                    download(item);
+                    if(item.extract != null){
+                        extract(item);
                     }
                 }
 
-                var3 = update.iterator();
-
-                while(var3.hasNext()) {
-                    item = (Item)var3.next();
-                    Updater.this.download(item);
-                    if (item.extract != null) {
-                        Updater.this.extract(item);
-                    }
-                }
-
-                Updater.this.listener.fisnished();
+                listener.fisnished();
             }
         });
         t.setDaemon(true);
@@ -67,115 +58,82 @@ public class Updater {
     private boolean correct_platform(Item item) {
         String os = System.getProperty("os.name");
         String arch = System.getProperty("os.arch");
-        return os.indexOf(item.os) >= 0 && (arch.equals(item.arch) || item.arch.length() == 0);
+        return (os.indexOf(item.os) >= 0) && (arch.equals(item.arch) || item.arch.length() == 0);
     }
 
     private void set_date(Item item) {
-        if (item.file.exists()) {
+        if(item.file.exists()){
             item.date = item.file.lastModified();
         }
-
     }
 
     private boolean has_update(Item item) {
         try {
-            URL url = new URL(item.link);
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            URL  url = new URL(item.link);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("HEAD");
             conn.setIfModifiedSince(item.date);
-
             try {
-                if (conn.getResponseCode() == 200) {
+                if(conn.getResponseCode() == HttpURLConnection.HTTP_OK){
                     item.size = Long.parseLong(conn.getHeaderField("Content-Length"));
                     return true;
                 }
-            } catch (NumberFormatException var5) {
-                ;
-            }
-
+            } catch(NumberFormatException e){}
             conn.disconnect();
-        } catch (MalformedURLException var6) {
-            var6.printStackTrace();
-        } catch (IOException var7) {
-            var7.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
         return false;
     }
 
     private void download(Item item) {
-        this.listener.log(String.format("Downloading '%s'", item.file.getName()));
-
+        listener.log(String.format("Downloading '%s'", item.file.getName()));
+        URL link;
         try {
-            URL link = new URL(item.link);
+            link = new URL(item.link);
             ReadableByteChannel rbc = Channels.newChannel(link.openStream());
             FileOutputStream fos = new FileOutputStream(item.file);
-            long position = 0L;
+            long position = 0;
             int step = 20480;
-            this.listener.progress(position, item.size);
-
-            while(position < item.size) {
-                position += fos.getChannel().transferFrom(rbc, position, (long)step);
-                this.listener.progress(position, item.size);
+            listener.progress(position, item.size);
+            while(position < item.size){
+                position += fos.getChannel().transferFrom(rbc, position, step);
+                listener.progress(position, item.size);
             }
-
-            this.listener.progress(0L, item.size);
+            listener.progress(0, item.size);
             fos.close();
-        } catch (MalformedURLException var8) {
-            var8.printStackTrace();
-        } catch (IOException var9) {
-            var9.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
     }
 
     private void extract(Item item) {
-        this.listener.log(String.format("Unpacking '%s'", item.file.getName()));
+        listener.log(String.format("Unpacking '%s'", item.file.getName()));
         try {
-            new File("./data").mkdir();
-            new File("./data/hud").mkdir();
-            new File("./data/hud/sloth").mkdir();
-            new File("./data/hud/sloth/buttons").mkdir();
-            new File("./data/hud/sloth/chkbox").mkdir();
-            new File("./data/hud/sloth/scroll").mkdir();
-            new File("./data/hud/sloth/buttons/circular").mkdir();
-            new File("./data/hud/sloth/buttons/circular/small").mkdir();
-            new File("./data/hud/default").mkdir();
-            new File("./data/hud/default/buttons").mkdir();
-            new File("./data/hud/default/chkbox").mkdir();
-            new File("./data/hud/default/scroll").mkdir();
-            new File("./data/hud/default/buttons/circular").mkdir();
-            new File("./data/hud/default/buttons/circular/small").mkdir();
-            ZipFile zip = new ZipFile(item.file);
-
-            Enumeration<? extends ZipEntry> entries = zip.entries();
-
-            while(entries.hasMoreElements()){
-                ZipEntry entry = entries.nextElement();
-                System.out.println(entry.getName());
-                if(entry.isDirectory()){
-               //     System.out.print("dir  : " + entry.getName());
-                   // String destPath = File.separator + entry.getName();
-                   // System.out.println(" => " + destPath);
-                    File file = new File(entry.getName());
-                    file.mkdirs();
-                } else {
-                    String destPath = entry.getName();
-
-                    try(InputStream inputStream = zip.getInputStream(entry);
-                        FileOutputStream outputStream = new FileOutputStream(destPath);
-                    ){
-                        int data = inputStream.read();
-                        while(data != -1){
-                            outputStream.write(data);
-                            data = inputStream.read();
-                        }
-                    }
-                    System.out.println("file : " + entry.getName() + " => " + destPath);
+            ZipFile zip;
+            zip = new ZipFile(item.file);
+            Enumeration<? extends ZipEntry> contents=zip.entries();
+            while (contents.hasMoreElements()) {
+                ZipEntry file=(ZipEntry)contents.nextElement();
+                String name = file.getName();
+                if(name.indexOf("META-INF") == 0){continue;}
+                listener.log("\t"+name);
+                ReadableByteChannel rbc = Channels.newChannel(zip.getInputStream(file));
+                FileOutputStream fos = new FileOutputStream(new File(item.extract, name));
+                long position = 0;
+                long size = file.getSize();
+                int step = 20480;
+                while(position < size){
+                    position += fos.getChannel().transferFrom(rbc, position, step);
                 }
+                fos.close();
             }
-        } catch(IOException e){
-            throw new RuntimeException("Error unzipping file " + item.file.getName(), e);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -20,93 +20,76 @@ public class UpdaterConfig {
     private static final String OS = "os";
     private static final String FILE = "file";
     private static final String LINK = "link";
-    public String mem ;
-    public String mem2;
-    public String mem3;
-    public String res;
-    public String server;
-    public String jar;
+    public String mem, mem2, mem3, res, server, jar;
     public static File dir = new File(".");
-    public static File dir2 = new File("/data");
     List<UpdaterConfig.Item> items = new ArrayList();
 
-    public UpdaterConfig() {
-        if (!dir.exists()) {
+    public UpdaterConfig(){
+        if(!dir.exists()){
             dir.mkdirs();
-        }
-        if(!dir2.exists()){
-            dir2.mkdirs();
         }
 
         InputStream stream = UpdaterConfig.class.getResourceAsStream("/config.xml");
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder;
         try {
-            DocumentBuilder builder = factory.newDocumentBuilder();
+            builder = factory.newDocumentBuilder();
             Document doc = builder.parse(stream);
             stream.close();
+
             NamedNodeMap attrs = doc.getDocumentElement().getAttributes();
             Node node = attrs.getNamedItem("mem");
-            this.mem = node != null ? node.getNodeValue() : "";
-            node = attrs.getNamedItem("mem2");
-            this.mem2 = node != null ? node.getNodeValue() : "";
-            node = attrs.getNamedItem("mem3");
-            this.mem3 = node != null ? node.getNodeValue() : "";
+            mem = (node != null)?node.getNodeValue():"";
+
             node = attrs.getNamedItem("res");
-            this.res = node != null ? node.getNodeValue() : "";
+            res = (node != null)?node.getNodeValue():"";
+
             node = attrs.getNamedItem("server");
-            this.server = node != null ? node.getNodeValue() : "";
+            server = (node != null)?node.getNodeValue():"";
+
             node = attrs.getNamedItem("jar");
-            this.jar = node != null ? node.getNodeValue() : "";
-            NodeList groupNodes = doc.getElementsByTagName("item");
+            jar = (node != null)?node.getNodeValue():"";
 
-            for(int i = 0; i < groupNodes.getLength(); ++i) {
-                UpdaterConfig.Item itm = this.parseItem(groupNodes.item(i));
-                if (itm != null) {
-                    this.items.add(itm);
-                }
+            NodeList groupNodes = doc.getElementsByTagName(ITEM);
+            for (int i = 0; i < groupNodes.getLength(); i++) {
+                Item itm = parseItem(groupNodes.item(i));
+                if (itm != null)
+                    items.add(itm);
             }
-        } catch (Exception var10) {
-            var10.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
     }
 
-    private UpdaterConfig.Item parseItem(Node node) {
-        UpdaterConfig.Item itm = new UpdaterConfig.Item();
-        if (node.getNodeType() != 1) {
+    private Item parseItem(Node node) {
+        Item itm = new Item();
+        if (node.getNodeType() != Node.ELEMENT_NODE)
             return null;
+        Element el = (Element) node;
+
+        itm.link = el.getAttribute(LINK);
+        if(el.hasAttribute(FILE)){
+            itm.file = new File(dir, el.getAttribute(FILE));
         } else {
-            Element el = (Element)node;
-            itm.link = el.getAttribute("link");
-            if (el.hasAttribute("file")) {
-                itm.file = new File(dir, el.getAttribute("file"));
-            } else {
-                int i = itm.link.lastIndexOf("/");
-                itm.file = new File(dir, itm.link.substring(i + 1));
-            }
-
-            itm.os = el.getAttribute("os");
-            itm.arch = el.getAttribute("arch");
-            String e = el.getAttribute("extract");
-            if (e.length() > 0) {
-                itm.extract = new File(dir, e);
-            }
-
-            return itm;
+            int i = itm.link.lastIndexOf("/");
+            itm.file = new File(dir, itm.link.substring(i+1));
         }
+        itm.os = el.getAttribute(OS);
+        itm.arch = el.getAttribute(ARCH);
+        String e = el.getAttribute(EXTRACT);
+        if(e.length() > 0){itm.extract = new File(dir, e);}
+        return itm;
     }
 
-    public static class Item {
+    public static class Item{
         public String arch;
         public String os;
         public File file;
         public String link;
-        public long date = 0L;
-        public long size = 0L;
+        public long date = 0;
+        public long size = 0;
         public File extract = null;
 
-        public Item() {
-        }
     }
 }

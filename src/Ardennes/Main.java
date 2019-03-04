@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
+import static Ardennes.UpdaterConfig.dir;
 
 
 public class Main extends JFrame implements IUpdaterListener {
@@ -17,59 +18,57 @@ public class Main extends JFrame implements IUpdaterListener {
     private static final long serialVersionUID = 1L;
     private static Updater updater;
     private FileOutputStream log;
-    private JTextArea logbox;
-    private JProgressBar progress;
 
     public static void main(String[] args) {
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception var2) {
-            ;
-        }
+            javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
+        } catch(Exception e) {}
         Main gui = new Main();
         gui.setVisible(true);
         gui.setSize(350, 450);
         gui.log(String.format("OS: '%s', arch: '%s'", System.getProperty("os.name"), System.getProperty("os.arch")));
         gui.log("Checking for updates...");
+
         updater = new Updater(gui);
         updater.update();
     }
 
-    public Main() {
+    private JTextArea logbox;
+    private JProgressBar progress;
+
+    public Main(){
         super("HnH updater");
-
         try {
-            if (!UpdaterConfig.dir.exists()) {
-                UpdaterConfig.dir.mkdirs();
+            if(!dir.exists()){
+                dir.mkdirs();
             }
-
-            this.log = new FileOutputStream(new File(UpdaterConfig.dir, "updater.log"));
-        } catch (FileNotFoundException var2) {
-            var2.printStackTrace();
+            log = new FileOutputStream(new File(dir, "updater.log"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-
-        this.setDefaultCloseOperation(3);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel p;
-        this.add(p = new JPanel());
-        p.setLayout(new BoxLayout(p, 3));
-        p.add(this.logbox = new JTextArea());
-        this.logbox.setEditable(false);
-        this.logbox.setFont(this.logbox.getFont().deriveFont(10.0F));
-        p.add(this.progress = new JProgressBar());
-        this.progress.setMinimum(0);
-        this.progress.setMaximum(1024);
-        this.pack();
+        add(p = new JPanel());
+        p.setLayout(new BoxLayout(p, BoxLayout.PAGE_AXIS));
+
+        p.add(logbox = new JTextArea());
+        logbox.setEditable(false);
+        logbox.setFont(logbox.getFont().deriveFont(10.0f));
+
+        p.add(progress = new JProgressBar());
+        progress.setMinimum(0);
+        progress.setMaximum(PROGRESS_MAX);
+        pack();
     }
 
+    @Override
     public void log(String message) {
         message = message.concat("\n");
-        this.logbox.append(message);
+        logbox.append(message);
         try {
-            if (this.log != null) {
-                this.log.write(message.getBytes());
-            }
-        } catch (IOException var3) {
-            var3.printStackTrace();
+            if(log != null){log.write(message.getBytes());}
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
