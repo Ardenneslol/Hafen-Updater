@@ -52,15 +52,15 @@
 	<item link="http://www.havenandhearth.com/java/jogl2/jar/gluegen-rt.jar"/>
 	<item link="http://www.havenandhearth.com/java/hafen-res.jar" />
 	<item link="http://www.havenandhearth.com/java/builtin-res.jar" />
-	<item link="https://ardenneslol.github.io/Hafen/hafen.jar" />
-	<item link="https://ardenneslol.github.io/Hafen/amber-res.jar" />
 	<item link="https://ardenneslol.github.io/Hafen/HavenDiscord.jar" />
 	<item link="https://ardenneslol.github.io/Hafen/rxjava-1.1.5.jar" />
 	<item link="https://ardenneslol.github.io/Hafen/rxjava-1.1.5-javadoc.jar" />
-	<item link="https://ardenneslol.github.io/Hafen/l10n.jar" />
 	<item link="https://ardenneslol.github.io/Hafen/sqlite-jdbc-3.26.0.jar" />
 	<item link="https://ardenneslol.github.io/Hafen/flogger-0.3.1.jar" />
 	<item link="https://ardenneslol.github.io/Hafen/flogger-system-backend-0.3.1.jar" />
 	<item link="https://ardenneslol.github.io/Hafen/grid_ids.txt"/>
 	<item link="https://ardenneslol.github.io/Hafen/run.bat"/>
+	<item link="https://ardenneslol.github.io/Hafen/l10n.jar" />
+	<item link="https://ardenneslol.github.io/Hafen/amber-res.jar" />
+	<item link="https://ardenneslol.github.io/Hafen/hafen.jar" />
 </config>

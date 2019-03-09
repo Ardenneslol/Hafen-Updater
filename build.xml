@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="create_run_jar" name="Create Runnable Jar for Project PluginTest">
-    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
-    <!--ANT 1.7 is required                                        -->
-    <target name="create_run_jar">
+<project default="deftgt" name="Create Runnable Jar for Project PluginTest">
+<!--   <target name="create_run_jar">
         <jar destfile="${basedir}/jar/updater-hafen.jar" update="true">
             <fileset dir="${basedir}/updater"/>
             <fileset file="etc/config.xml"/>
@@ -15,5 +13,43 @@
     </target>
     <target name="compile-jar-classes">
         <javac srcdir="src" destdir="${basedir}\updater\" classpath="${basedir}\updater\" />
-    </target>
+    </target>-->
+
+<target name="build-env">
+    <mkdir dir="build" />
+    <mkdir dir="build/classes" />
+</target>
+
+<target name="compile" depends="build-env">
+    <javac srcdir="src" destdir="build/classes" debug="on" source="1.8" target="1.8" includeantruntime="no">
+        <classpath>
+            <pathelement path="libs/swt.jar" />
+            <pathelement path="libs/commons-io-2.4.jar" />
+        </classpath>
+    </javac>
+</target>
+
+<target name="jar" depends="compile">
+    <jar destfile="build/updater-hafen.jar" filesetmanifest="mergewithoutmain">
+        <zipgroupfileset dir="libs" includes="*.jar"/>
+        <manifest>
+            <attribute name="Main-Class" value="Ardennes.Main"/>
+            <attribute name="Class-Path" value="."/>
+        </manifest>
+        <fileset dir="build/classes"/>
+    </jar>
+    <chmod file="build/updater-hafen.jar" perm="a+x" />
+</target>
+<copy todir="build/classes" file="etc/config.xml" />
+<copy todir="build">
+    <fileset dir="etc">
+        <include name="launch.bat" />
+    </fileset>
+</copy>
+
+<target name="deftgt" depends="jar" />
+
+<target name="clean">
+    <delete dir="build" />
+</target>
 </project>

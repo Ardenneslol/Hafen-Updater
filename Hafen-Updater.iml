@@ -7,5 +7,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="libs" level="project" />
+    <orderEntry type="library" name="commons-io-2.4" level="project" />
+    <orderEntry type="library" name="jgoodies-forms-1.8.0" level="project" />
+    <orderEntry type="library" name="swt" level="project" />
   </component>
 </module>

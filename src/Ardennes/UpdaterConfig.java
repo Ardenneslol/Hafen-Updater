@@ -42,6 +42,13 @@ public class UpdaterConfig {
             Node node = attrs.getNamedItem("mem");
             mem = (node != null)?node.getNodeValue():"";
 
+            node = attrs.getNamedItem("mem2");
+            mem2 = (node != null)?node.getNodeValue():"";
+
+            node = attrs.getNamedItem("mem3");
+            mem3 = (node != null)?node.getNodeValue():"";
+
+
             node = attrs.getNamedItem("res");
             res = (node != null)?node.getNodeValue():"";
 
