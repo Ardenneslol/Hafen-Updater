@@ -94,6 +94,7 @@ public class UpdaterConfig {
         public String os;
         public File file;
         public String link;
+        public String script;
         public long date = 0;
         public long size = 0;
         public File extract = null;

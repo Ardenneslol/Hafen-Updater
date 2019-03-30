@@ -52,6 +52,22 @@
 	<item link="http://www.havenandhearth.com/java/jogl2/jar/gluegen-rt.jar"/>
 	<item link="http://www.havenandhearth.com/java/hafen-res.jar" />
 	<item link="http://www.havenandhearth.com/java/builtin-res.jar" />
+
+	<!--scripts-->
+	<item link="https://ardenneslol.github.io/Hafen/scripts/Farmer.PBot" />
+	<item link="https://ardenneslol.github.io/Hafen/scripts/Farmer.png" />
+	<item link="https://ardenneslol.github.io/Hafen/scripts/Cellar.PBot" />
+	<item link="https://ardenneslol.github.io/Hafen/scripts/Cellar.png" />
+	<item link="https://ardenneslol.github.io/Hafen/scripts/ClayDigger.PBot" />
+	<item link="https://ardenneslol.github.io/Hafen/scripts/ClayDigger.png" />
+	<item link="https://ardenneslol.github.io/Hafen/scripts/ClothMaker.PBot" />
+	<item link="https://ardenneslol.github.io/Hafen/scripts/ClothMaker.png" />
+	<item link="https://ardenneslol.github.io/Hafen/scripts/Destroyer.PBot" />
+	<item link="https://ardenneslol.github.io/Hafen/scripts/Destroyer.png" />
+	<item link="https://ardenneslol.github.io/Hafen/scripts/TroughFiller.PBot" />
+	<item link="https://ardenneslol.github.io/Hafen/scripts/TroughFiller.png" />
+
+	<!--libraries/utils-->
 	<item link="https://ardenneslol.github.io/Hafen/HavenDiscord.jar" />
 	<item link="https://ardenneslol.github.io/Hafen/rxjava-1.1.5.jar" />
 	<item link="https://ardenneslol.github.io/Hafen/rxjava-1.1.5-javadoc.jar" />
@@ -59,8 +75,21 @@
 	<item link="https://ardenneslol.github.io/Hafen/flogger-0.3.1.jar" />
 	<item link="https://ardenneslol.github.io/Hafen/flogger-system-backend-0.3.1.jar" />
 	<item link="https://ardenneslol.github.io/Hafen/grid_ids.txt"/>
+	<item link="https://ardenneslol.github.io/Hafen/tregex.jar" />
+	<item link="https://ardenneslol.github.io/Hafen/truffle-api.jar" />
+	<item link="https://ardenneslol.github.io/Hafen/graaljs.jar" />
+	<item link="https://ardenneslol.github.io/Hafen/graal-sdk.jar" />
+	<item link="https://ardenneslol.github.io/Hafen/jackson-core.jar" />
 	<item link="https://ardenneslol.github.io/Hafen/run.bat"/>
 	<item link="https://ardenneslol.github.io/Hafen/l10n.jar" />
+
+	<!--Nonstatic game files-->
 	<item link="https://ardenneslol.github.io/Hafen/amber-res.jar" />
 	<item link="https://ardenneslol.github.io/Hafen/hafen.jar" />
+	<item link="https://ardenneslol.github.io/Hafen/static.sqlite" />
+
+	<!--non static beta files-->
+<!--	<item link="https://ardenneslol.github.io/Hafen-Beta/amber-res.jar" />
+	<item link="https://ardenneslol.github.io/Hafen-Beta/hafen.jar" />
+	<item link="https://ardenneslol.github.io/Hafen-Beta/static.sqlite" />&ndash;&gt;-->
 </config>

@@ -30,6 +30,7 @@ public class Updater {
 
             @Override
             public void run() {
+                new File("./scripts").mkdir();
                 List<Item> update = new ArrayList<UpdaterConfig.Item>();
                 for(Item item : cfg.items){
                     if(!correct_platform(item)){continue;}
@@ -94,7 +95,11 @@ public class Updater {
         try {
             link = new URL(item.link);
             ReadableByteChannel rbc = Channels.newChannel(link.openStream());
-            FileOutputStream fos = new FileOutputStream(item.file);
+            FileOutputStream fos;
+            File file = item.file;
+            if(item.link.contains("scripts"))
+                file = new File("./scripts/"+item.file);
+            fos = new FileOutputStream(file);
             long position = 0;
             int step = 20480;
             listener.progress(position, item.size);
